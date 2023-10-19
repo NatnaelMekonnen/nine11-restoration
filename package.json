@@ -1,0 +1,60 @@
+{
+  "name": "911-restoration-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "prod": "npm install && npm build",
+    "build": "tsc && npm run copy-files",
+    "dev": "nodemon --exec ts-node --esm src/index.ts",
+    "ts-start": "ts-node --esm src/index.ts",
+    "start": "node dist/index.js",
+    "test": "cross-env NODE_ENV=staging jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Touchcore-Global/911-restoration-api.git"
+  },
+  "author": "Natnael Mekonnen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Touchcore-Global/911-restoration-api/issues"
+  },
+  "homepage": "https://github.com/Touchcore-Global/911-restoration-api#readme",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.431.0",
+    "@aws-sdk/lib-storage": "^3.431.0",
+    "bcrypt": "^5.1.1",
+    "chalk": "^4.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "moment": "^2.29.4",
+    "mongoose": "^7.6.3",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.1",
+    "@types/cors": "^2.8.15",
+    "@types/express": "^4.17.20",
+    "@types/express-rate-limit": "^6.0.0",
+    "@types/jest": "^29.5.6",
+    "@types/jsonwebtoken": "^9.0.4",
+    "@types/lodash": "^4.14.200",
+    "@types/morgan": "^1.9.7",
+    "@types/multer": "^1.4.9",
+    "@typescript-eslint/eslint-plugin": "^6.8.0",
+    "@typescript-eslint/parser": "^6.8.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.3.1",
+    "eslint": "^8.51.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1"
+  }
+}
