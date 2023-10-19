@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
-import { errorLogger } from "../utils/logger";
 
 type err = {
   code: string;

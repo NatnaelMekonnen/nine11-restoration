@@ -17,7 +17,7 @@ export const multerParser = (
   res: Response,
   next: NextFunction,
 ) => {
-  upload.any()(req, res, (err: any) => {
+  upload.any()(req, res, (err: string) => {
     if (err) {
       errorLogger.log(err);
       return next(err);

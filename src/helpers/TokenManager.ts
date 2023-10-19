@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import envConfig from "../config/env.config";
-import { IAccount, IClient } from "../types/models";
+import { IAccount } from "../models/interface";
 const { JWT_SECRET } = envConfig;
 
 class TokenManager {
@@ -12,28 +12,11 @@ class TokenManager {
         lastName: data.lastName,
         email: data.email,
         phone: data.phone,
-        userType: data.userType,
-        googleId: data.googleId,
+        accountType: data.accountType,
         accountStatus: data.accountStatus,
-        roles: data.roles,
-        subscriptionPlan: data.subscriptionPlan,
       },
       JWT_SECRET,
       { expiresIn: expiresIn || "7d" },
-    );
-    return token;
-  }
-
-  generateClientToken(data: IClient, expiresIn?: string | number): string {
-    const token = jwt.sign(
-      {
-        _id: data._id,
-        account: data.account,
-        clientId: data.clientId,
-        grantType: "client",
-      },
-      JWT_SECRET,
-      { expiresIn: expiresIn || "1hr" },
     );
     return token;
   }
@@ -47,10 +30,10 @@ class TokenManager {
     }
   }
 
-  decodeToken(token: string): Record<string, any> | null {
+  decodeToken(token: string): Record<string, unknown> | null {
     try {
       const decoded = jwt.decode(token);
-      return decoded as Record<string, any>;
+      return decoded as Record<string, unknown>;
     } catch (error) {
       return null;
     }

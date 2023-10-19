@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import config from "./env.config";
-import { errorLogger, infoLogger, successLogger } from "../utils/logger";
+import { errorLogger, successLogger } from "../utils/logger";
 
 const { NODE_ENV, DEV_MONGO_URI, TEST_MONGO_URI, PROD_MONGO_URI } = config;
 
@@ -35,27 +35,5 @@ export const connection = async () => {
     );
   } catch (error) {
     return error;
-  }
-};
-
-export const dropDB = async () => {
-  try {
-    for (const collection in mongoose.connection.collections) {
-      mongoose.connection.collections[collection].drop().then(() => {
-        successLogger.log(`${collection} dropped!!`);
-      });
-    }
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const dropCollection = async (collection: string) => {
-  try {
-    mongoose.connection.collections[collection].drop().then(() => {
-      infoLogger.log(`${collection} dropped`);
-    });
-  } catch (error) {
-    throw error;
   }
 };

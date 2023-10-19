@@ -1,24 +1,21 @@
-import { Response, NextFunction } from "express";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Response, NextFunction, Request } from "express";
 import { errorLogger } from "../utils/logger";
 import errorHandler from "./errorHandler";
 
-const asyncHandler = (
+const asyncHandler = <T>(
   fn: (
     req: any,
     res: Response,
     next: NextFunction,
-  ) => Promise<any>,
+  ) => Promise<Response>,
 ) => {
-  return async (
-    req: any,
-    res: Response,
-    next: NextFunction,
-  ) => {
+  return async (req: T, res: Response, next: NextFunction) => {
     try {
       await fn(req, res, next);
     } catch (error) {
       errorLogger.log(error);
-      errorHandler(error, req, res);
+      errorHandler(error, req as Request, res);
     }
   };
 };

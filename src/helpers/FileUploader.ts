@@ -1,4 +1,4 @@
-import fs from "fs";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import envConfig from "../config/env.config";
 import { Upload } from "@aws-sdk/lib-storage";
 import { CompleteMultipartUploadCommandOutput, S3 } from "@aws-sdk/client-s3";
