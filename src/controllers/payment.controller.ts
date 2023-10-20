@@ -5,7 +5,11 @@ import {
 } from "../types/type";
 import ResponseHandler from "../middleware/response";
 import { validateRequest } from "../middleware/validate";
-import { ConfirmPaymentDTO, MakePaymentDTO } from "../dto/payment.dto";
+import {
+  ConfirmPaymentDTO,
+  MakePaymentDTO,
+  RequestPaymentDTO,
+} from "../dto/payment.dto";
 import PaymentService from "../services/payment.service";
 
 const response = new ResponseHandler();
@@ -41,6 +45,25 @@ class PaymentController {
     }
 
     const resp = await paymentService.confirmPayment(confirmPaymentDTO.data);
+
+    return response.send(res, resp.status, {
+      message: resp.message,
+      data: resp.data,
+    });
+  }
+  public async requestPayment(req: AuthenticatedRequest, res: Response) {
+    const requestPaymentDTO = await validateRequest(
+      RequestPaymentDTO,
+      req.body,
+    );
+
+    if (requestPaymentDTO.error || !requestPaymentDTO.data) {
+      return response.send(res, 400, {
+        data: requestPaymentDTO.error,
+      });
+    }
+
+    const resp = await paymentService.requestPayment(requestPaymentDTO.data);
 
     return response.send(res, resp.status, {
       message: resp.message,

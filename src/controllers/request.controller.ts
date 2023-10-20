@@ -32,7 +32,7 @@ class RequestController {
       data: resp.data,
     });
   }
-  public async UpdateRequest(req: AuthenticatedRequest, res: Response) {
+  public async updateRequest(req: AuthenticatedRequest, res: Response) {
     const updateDTO = await validateRequest(UpdateRequestDTO, req.body);
 
     if (updateDTO.error || !updateDTO.data) {

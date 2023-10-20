@@ -72,7 +72,7 @@ class OrderController {
       data: resp.data,
     });
   }
-  public async getAllOrder(req: AuthenticatedRequest, res: Response) {
+  public async getAllOrders(req: AuthenticatedRequest, res: Response) {
     const resp = await orderService.getAllOrder(req, req.account);
 
     return response.send(res, resp.status, {

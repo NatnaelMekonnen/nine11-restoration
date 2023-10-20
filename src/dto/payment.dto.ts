@@ -29,3 +29,8 @@ export class ConfirmPaymentDTO {
   @IsString()
   paymentRef!: string;
 }
+export class RequestPaymentDTO {
+  @IsNotEmpty()
+  @IsMongoId()
+  orderId!: string;
+}
