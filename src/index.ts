@@ -1,4 +1,4 @@
-import express, { Application, Request, Response } from "express";
+import express, { Application, NextFunction, Request, Response } from "express";
 import http from "http";
 import cors from "cors";
 import morgan from "morgan";
@@ -48,7 +48,17 @@ class App {
   }
 
   private configureRoutes() {
-    this.app.use("/v1", router);
+    this.app.use("/api/v1", router);
+    this.app.use((req: Request, _res: Response, next: NextFunction) => {
+      infoLogger.log({
+        body: req.body,
+        params: req.params,
+        query: req.query,
+        url: req.url,
+        method: req.method,
+      });
+      next();
+    });
     this.app.get("/", (_req: Request, res: Response) => {
       res.send("911 Restoration API Running");
     });

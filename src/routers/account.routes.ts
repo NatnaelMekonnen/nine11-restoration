@@ -11,7 +11,7 @@ const accountController = new AccountController();
 const accountRouter = Router();
 
 accountRouter.post(
-  "/",
+  "/create",
   authorize.optional,
   asyncHandler(accountController.createAccount),
 );
@@ -43,13 +43,12 @@ accountRouter.patch(
   [param("id").notEmpty().isMongoId()],
   expressValidate,
   authorize.account,
+  (req: Request, res: Response, next: NextFunction) =>
+    authorize.allowedAccountTypes(req, res, next, [
+      AccountType.Admin,
+      AccountType.Staff,
+    ]),
   asyncHandler(accountController.updateAccount),
-);
-accountRouter.patch(
-  "/activate",
-  expressValidate,
-  authorize.account,
-  asyncHandler(accountController.activateOwnAccount),
 );
 accountRouter.patch(
   "/deactivate",
@@ -98,7 +97,7 @@ accountRouter.get(
       AccountType.Admin,
       AccountType.Staff,
     ]),
-  asyncHandler(accountController.getAllUsers),
+  asyncHandler(accountController.getUser),
 );
 
 export default accountRouter;

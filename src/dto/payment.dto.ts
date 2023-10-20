@@ -1,10 +1,4 @@
-import {
-  IsMongoId,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  Min,
-} from "class-validator";
+import { IsMongoId, IsNotEmpty, IsString } from "class-validator";
 
 export class MakePaymentDTO {
   @IsNotEmpty()
@@ -12,9 +6,7 @@ export class MakePaymentDTO {
   paymentId!: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  @Min(0)
-  amount!: number;
+  amount!: string;
 
   @IsNotEmpty()
   checkImage!: Express.Multer.File;
@@ -32,5 +24,5 @@ export class ConfirmPaymentDTO {
 export class RequestPaymentDTO {
   @IsNotEmpty()
   @IsMongoId()
-  orderId!: string;
+  paymentId!: string;
 }

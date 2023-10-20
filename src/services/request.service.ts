@@ -68,17 +68,19 @@ class RequestService {
       }
     }
 
-    request.updateOne({
-      ...params,
-    });
-
-    await request.save();
+    const updated = await Request.findOneAndUpdate(
+      { _id: request._id },
+      params,
+      {
+        new: true,
+      },
+    );
 
     return {
       success: true,
       status: 200,
       message: "Request created",
-      data: request,
+      data: updated,
     };
   }
   public async changeRequestStatus(
@@ -158,7 +160,7 @@ class RequestService {
     return {
       success: true,
       status: 200,
-      message: `Requests`,
+      message: `Request`,
       data: requests,
     };
   }

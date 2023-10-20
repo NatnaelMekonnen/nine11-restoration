@@ -36,7 +36,7 @@ const accountSchema = new Schema<IAccount>(
     accountStatus: {
       type: String,
       enum: AccountStatus,
-      default: AccountStatus.Inactive,
+      default: AccountStatus.Active,
       required: true,
     },
   },

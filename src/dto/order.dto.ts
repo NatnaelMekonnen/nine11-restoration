@@ -1,11 +1,12 @@
 import {
+  IsEmpty,
   IsMongoId,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   Min,
 } from "class-validator";
-import { IAccount, IOrder } from "../models/interface";
+import { IAccount, IOrder, ITransaction } from "../models/interface";
 import { Types } from "mongoose";
 
 export class CreateOrderDTO implements Partial<IOrder> {
@@ -32,4 +33,10 @@ export class UpdateOrderDTO implements Partial<IOrder> {
   @IsOptional()
   @IsMongoId()
   assignedAgent?: string | Types.ObjectId | IAccount | undefined;
+
+  @IsEmpty()
+  orderStatus?: "Pending" | "Completed" | "Closed" | undefined;
+
+  @IsEmpty()
+  payment?: string | Types.ObjectId | ITransaction | undefined;
 }

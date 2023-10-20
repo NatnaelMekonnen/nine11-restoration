@@ -4,8 +4,8 @@ import {
   IsEmail,
   IsNotEmpty,
   IsOptional,
-  IsPhoneNumber,
   IsString,
+  MaxLength,
   MinLength,
 } from "class-validator";
 
@@ -21,7 +21,8 @@ export class CreateRequestDTO implements Partial<IRequest> {
   email?: string | undefined;
 
   @IsNotEmpty()
-  @IsPhoneNumber()
+  @MinLength(10)
+  @MaxLength(14)
   phoneNumber: string = "";
 
   @IsOptional()
@@ -51,19 +52,20 @@ export class CreateRequestDTO implements Partial<IRequest> {
 }
 
 export class UpdateRequestDTO implements Partial<IRequest> {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @MinLength(3)
-  fullName: string = "";
+  fullName?: string;
 
   @IsOptional()
   @IsString()
   @IsEmail()
   email?: string | undefined;
 
-  @IsNotEmpty()
-  @IsPhoneNumber()
-  phoneNumber: string = "";
+  @IsOptional()
+  @MinLength(10)
+  @MaxLength(14)
+  phoneNumber?: string;
 
   @IsOptional()
   @IsString()
@@ -78,13 +80,13 @@ export class UpdateRequestDTO implements Partial<IRequest> {
   @IsString()
   zipCode?: string | undefined;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  service: string = "";
+  service?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsDateString()
-  date: string = "";
+  date?: string;
 
   @IsOptional()
   @IsString()

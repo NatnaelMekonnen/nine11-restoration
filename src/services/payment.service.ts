@@ -6,12 +6,12 @@ import {
 } from "../dto/payment.dto";
 import FileUploader from "../helpers/FileUploader";
 import Transaction from "../models/Transaction";
-import { IFulfilledPayment, IOrder, IRequest } from "../models/interface";
+import { IFulfilledPayment, IOrder, ITransaction } from "../models/interface";
 import { AuthenticatedRequest, IServiceReturn } from "../types/type";
 import CodeGenerator from "../helpers/CodeGenerator";
 import { find, findOne } from "../helpers/Query";
-import Request from "../models/Request";
 import MailService from "../helpers/MailService";
+import Order from "../models/Order";
 
 class PaymentService {
   private fileUploader: FileUploader;
@@ -23,6 +23,21 @@ class PaymentService {
     this.mailService = new MailService();
   }
   public async makePayment(params: MakePaymentDTO): Promise<IServiceReturn> {
+    let amount: number;
+    try {
+      amount = parseFloat(params.amount);
+      if (!amount || amount < 0) {
+        throw new Error("Amount is invalid");
+      }
+    } catch (error) {
+      return {
+        success: false,
+        status: 404,
+        message: "Amount is invalid",
+        data: error,
+      };
+    }
+
     const payment = await Transaction.findById(params.paymentId);
 
     if (!payment) {
@@ -45,7 +60,7 @@ class PaymentService {
     }
 
     const paymentObject: IFulfilledPayment = {
-      amount: params.amount,
+      amount,
       checkImage: upload.location,
       isConfirmed: false,
       paymentRef: this.codeGenerator.getPaymentRef(),
@@ -56,7 +71,7 @@ class PaymentService {
         return 0;
       }
       return sum + paid.amount;
-    }, 0);
+    }, amount);
 
     if (payment.amount <= totalFulfilled) {
       payment.paymentStatus = PaymentStatus.Successful;
@@ -96,6 +111,7 @@ class PaymentService {
     });
 
     const update = await Transaction.findByIdAndUpdate(
+      params.paymentId,
       {
         $set: { fulfilledPayments: updatedPayments },
       },
@@ -112,31 +128,31 @@ class PaymentService {
   public async requestPayment(
     params: RequestPaymentDTO,
   ): Promise<IServiceReturn> {
-    const request = (await Request.findOne({ order: params.orderId }).populate(
-      "order",
-    )) as unknown as (IRequest & { order: IOrder }) | null;
+    const order = (await Order.findOne({ payment: params.paymentId }).populate(
+      "payment",
+    )) as unknown as IOrder & { payment: ITransaction };
 
-    if (!request) {
+    if (!order) {
       return {
         success: false,
         status: 404,
         message: "Request not found!",
-        data: request,
+        data: order,
       };
     }
 
-    if (request.email) {
+    if (order.payment?.from?.email) {
       await this.mailService.sendMail({
         subject: "Payment Requested",
-        to: request.email,
-        text: `Hello, Payment has been requested for service ${request.service}.\nAmount: ${request.order?.cost}`,
+        to: order.payment.from.email,
+        text: `Hello, Payment has been requested for service.\nAmount: ${order?.cost}`,
       });
     }
     return {
       success: true,
       status: 200,
       message: "Payment requested!",
-      data: request,
+      data: order.payment,
     };
   }
   public async getPayments(req: AuthenticatedRequest): Promise<IServiceReturn> {
@@ -155,7 +171,7 @@ class PaymentService {
     return {
       success: true,
       status: 200,
-      message: "Payments",
+      message: "Payment!",
       data: transactions,
     };
   }

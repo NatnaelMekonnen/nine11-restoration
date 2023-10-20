@@ -11,13 +11,18 @@ import {
   RequestPaymentDTO,
 } from "../dto/payment.dto";
 import PaymentService from "../services/payment.service";
+import { formatFileRequest } from "../utils/formatFileRequest";
 
 const response = new ResponseHandler();
 const paymentService = new PaymentService();
 
 class PaymentController {
   public async makePayment(req: OptionalAuthenticatedRequest, res: Response) {
-    const makePaymentDTO = await validateRequest(MakePaymentDTO, req.body);
+    const files = formatFileRequest(req.files);
+    const makePaymentDTO = await validateRequest(MakePaymentDTO, {
+      ...req.body,
+      ...files,
+    });
 
     if (makePaymentDTO.error || !makePaymentDTO.data) {
       return response.send(res, 400, {

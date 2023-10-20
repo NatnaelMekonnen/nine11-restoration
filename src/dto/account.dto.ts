@@ -1,9 +1,9 @@
 import {
   IsEmail,
+  IsEmpty,
   IsEnum,
   IsNotEmpty,
   IsOptional,
-  IsPhoneNumber,
   IsString,
   MaxLength,
   MinLength,
@@ -35,46 +35,62 @@ export class CreateAccountDTO implements Partial<IAccount> {
   lastName: string = "";
 
   @IsOptional()
-  @IsPhoneNumber()
+  @MinLength(10)
+  @MaxLength(14)
   phone?: string | undefined;
 
   @IsOptional()
   @IsString()
   @MinLength(8)
   password?: string | undefined;
+
+  @IsEmpty()
+  accountStatus?: "Active" | "Inactive" | "Suspended" | "Deleted" | undefined;
 }
 
 export class UpdateAccountDTO implements Partial<IAccount> {
   @IsOptional()
   @IsString()
   @IsEnum(AccountType)
-  accountType: "Admin" | "Staff" | "Customer" = "Customer";
+  accountType?: keyof typeof AccountType;
 
   @IsOptional()
   @IsString()
   @IsEmail()
-  email: string = "";
+  email?: string;
 
   @IsOptional()
   @IsString()
   @MinLength(3)
   @MaxLength(15)
-  firstName: string = "";
+  firstName?: string;
 
   @IsOptional()
   @IsString()
   @MinLength(3)
   @MaxLength(15)
-  lastName: string = "";
+  lastName?: string;
 
   @IsOptional()
-  @IsPhoneNumber()
+  @MinLength(10)
+  @MaxLength(14)
   phone?: string | undefined;
+
+  @IsEmpty()
+  accountStatus?: "Active" | "Inactive" | "Suspended" | "Deleted" | undefined;
+
+  @IsEmpty()
+  password?: string | undefined;
 }
 
 export class UpdatePasswordDTO {
   @IsNotEmpty()
   @IsString()
   @MinLength(8)
-  password: string = "";
+  oldPassword: string = "";
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(8)
+  newPassword: string = "";
 }

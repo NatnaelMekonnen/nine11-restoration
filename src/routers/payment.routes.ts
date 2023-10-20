@@ -23,7 +23,7 @@ paymentRouter.get(
   asyncHandler(paymentController.getPayment),
 );
 paymentRouter.post(
-  "/",
+  "/makePayment",
   authorize.optional,
   asyncHandler(paymentController.makePayment),
 );

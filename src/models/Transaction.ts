@@ -33,7 +33,7 @@ const transactionSchema = new Schema<ITransaction>(
     fulfilledPayments: [
       {
         amount: {
-          type: String,
+          type: Number,
           required: true,
         },
         checkImage: {
@@ -41,7 +41,7 @@ const transactionSchema = new Schema<ITransaction>(
           required: true,
         },
         isConfirmed: {
-          type: String,
+          type: Boolean,
           required: true,
         },
         paymentRef: {

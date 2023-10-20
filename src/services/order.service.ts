@@ -51,7 +51,7 @@ class OrderService {
       const order = new Order({
         acceptedDate: moment().toISOString(),
         cost: params.cost,
-        orderId: this.codeGenerator.getOrderId(),
+        orderId: await this.codeGenerator.getOrderId(),
         orderStatus: OrderStatus.Pending,
       });
 
@@ -96,18 +96,29 @@ class OrderService {
       };
     }
 
-    order.updateOne({
-      cost: params.cost,
-      assignedAgent: params.assignedAgent,
-    });
+    const updated = await Order.findOneAndUpdate(
+      { _id: order._id },
+      {
+        cost: params.cost,
+        assignedAgent: params.assignedAgent,
+      },
+      { new: true },
+    );
 
-    await order.save();
+    if (updated) {
+      await Transaction.findOneAndUpdate(
+        {
+          _id: updated.payment,
+        },
+        { amount: params.cost },
+      );
+    }
 
     return {
       success: true,
       status: 200,
       message: "Order created",
-      data: order,
+      data: updated,
     };
   }
   public async changeOrderStatus(

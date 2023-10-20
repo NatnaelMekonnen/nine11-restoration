@@ -39,11 +39,14 @@ class AccountService {
       if (account?.accountType === AccountType.Admin && !params.password) {
         params.password = this.codeGenerator.getTemporaryPassword();
       }
+
       const newAccount = new Account({
         firstName: params.firstName,
         lastName: params.lastName,
         accountType: params.accountType,
         phone: params.phone,
+        password: params.password,
+        email: params.email,
       });
 
       await newAccount.save();
@@ -85,20 +88,17 @@ class AccountService {
           data: account,
         };
       }
-
-      account.accountType = params.accountType;
-      account.email = params.email;
-      account.firstName = params.firstName;
-      account.lastName = params.lastName;
-      account.phone = params.phone;
-
-      await account.save();
+      const updated = await Account.findOneAndUpdate(
+        { _id: account._id },
+        params,
+        { new: true },
+      );
 
       return {
-        success: Boolean(account),
+        success: true,
         status: 200,
         message: "Account updated successfully!",
-        data: account,
+        data: updated,
       };
     } catch (error) {
       return {
@@ -125,7 +125,23 @@ class AccountService {
         };
       }
 
-      updateAccount.password = params.password;
+      if (updateAccount?.password) {
+        const validPass = await this.passwordManager.verifyPassword(
+          params.oldPassword,
+          updateAccount.password,
+        );
+
+        if (!validPass) {
+          return {
+            success: false,
+            status: 400,
+            data: null,
+            message: "Wrong password!",
+          };
+        }
+      }
+
+      updateAccount.password = params.newPassword;
       await updateAccount.save();
 
       return {
