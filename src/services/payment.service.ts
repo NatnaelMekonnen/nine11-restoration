@@ -110,11 +110,10 @@ class PaymentService {
       data: transactions,
     };
   }
-  public async getPayment(
-    id: string,
-    req: AuthenticatedRequest,
-  ): Promise<IServiceReturn> {
-    const transactions = await findOne(Transaction, req, { _id: id });
+  public async getPayment(req: AuthenticatedRequest): Promise<IServiceReturn> {
+    const transactions = await findOne(Transaction, req, {
+      _id: req.params.id,
+    });
     return {
       success: true,
       status: 200,

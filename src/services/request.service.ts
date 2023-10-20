@@ -1,10 +1,12 @@
-import { Types } from "mongoose";
+import { ClientSession, Types } from "mongoose";
 import { AccountType, RequestStatus } from "../constants/enums";
 import { CreateRequestDTO, UpdateRequestDTO } from "../dto/request.dto";
 import Request from "../models/Request";
 import { AuthenticatedRequest, IServiceReturn } from "../types/type";
 import { IAccount } from "../models/interface";
 import { find, findOne } from "../helpers/Query";
+import Order from "../models/Order";
+import { withTransaction } from "../utils/withTransaction";
 
 class RequestService {
   public async createRequest(
@@ -110,7 +112,13 @@ class RequestService {
     };
   }
   public async deleteRequest(id: string): Promise<IServiceReturn> {
-    const request = await Request.findByIdAndDelete(id);
+    const request = await Request.findById(id);
+    const order = await Order.findById(request?.order);
+
+    await withTransaction(async (session: ClientSession) => {
+      await request?.deleteOne({ session });
+      await order?.deleteOne({ session });
+    });
 
     return {
       success: true,
