@@ -27,6 +27,11 @@ class CodeGenerator {
 
     return code;
   }
+  public getPaymentRef() {
+    const code = this.generate(8);
+
+    return `PR-${code}`;
+  }
 
   public getTemporaryPassword() {
     const characters =

@@ -16,15 +16,16 @@ export enum AccountStatus {
 export enum RequestStatus {
   Pending = "Pending",
   Accepted = "Accepted",
-  Canceled = "Canceled",
+  Closed = "Closed",
 }
 export enum OrderStatus {
   Pending = "Pending",
   Completed = "Completed",
-  Canceled = "Canceled",
+  Closed = "Closed",
 }
 export enum PaymentStatus {
   Pending = "Pending",
+  Successful = "Successful",
   Confirmed = "Confirmed",
   Failed = "Failed",
   Canceled = "Canceled",

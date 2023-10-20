@@ -22,6 +22,13 @@ interface ITimeStamps {
   updatedAt: string;
 }
 
+export interface IFulfilledPayment {
+  amount: number;
+  checkImage: string;
+  isConfirmed: boolean;
+  paymentRef: string;
+}
+
 export interface IAccount extends ITimeStamps {
   firstName: string;
   lastName: string;
@@ -42,8 +49,9 @@ export interface IRequest extends ITimeStamps {
   date: string;
   detail?: string;
   requestStatus: keyof typeof RequestStatus;
+  createdBy?: string | Types.ObjectId | IAccount;
   order?: string | Types.ObjectId | IOrder;
-  canceledBy?: string | Types.ObjectId | IAccount;
+  closedBy?: string | Types.ObjectId | IAccount;
 }
 export interface IOrder extends ITimeStamps {
   orderId: string;
@@ -52,13 +60,15 @@ export interface IOrder extends ITimeStamps {
   orderStatus: keyof typeof OrderStatus;
   cancelReason?: string;
   canceledBy?: string | Types.ObjectId | IAccount;
-  payment?: string[] | Types.ObjectId[] | ITransaction[];
+  payment?: string | Types.ObjectId | ITransaction;
+  assignedAgent: string | Types.ObjectId | IAccount;
 }
 export interface ITransaction extends ITimeStamps {
   from: PersonalDetail;
   reason: keyof typeof PaymentReason;
   amount: number;
   paymentStatus: keyof typeof PaymentStatus;
+  fulfilledPayments: Types.Array<IFulfilledPayment>;
 }
 export interface IStaff extends ITimeStamps {
   account: string | Types.ObjectId | IAccount;

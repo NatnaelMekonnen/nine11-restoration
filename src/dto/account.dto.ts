@@ -44,7 +44,7 @@ export class CreateAccountDTO implements Partial<IAccount> {
   password?: string | undefined;
 }
 
-export class UpdateAccountDTO {
+export class UpdateAccountDTO implements Partial<IAccount> {
   @IsOptional()
   @IsString()
   @IsEnum(AccountType)

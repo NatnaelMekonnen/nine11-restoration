@@ -30,6 +30,26 @@ const transactionSchema = new Schema<ITransaction>(
       type: String,
       enum: PaymentReason,
     },
+    fulfilledPayments: [
+      {
+        amount: {
+          type: String,
+          required: true,
+        },
+        checkImage: {
+          type: String,
+          required: true,
+        },
+        isConfirmed: {
+          type: String,
+          required: true,
+        },
+        paymentRef: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
   },
   { timestamps: true },
 );

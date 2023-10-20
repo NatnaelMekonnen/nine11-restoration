@@ -8,7 +8,11 @@ import { IRequest } from "./interface";
 
 const requestSchema = new Schema<IRequest>(
   {
-    canceledBy: {
+    closedBy: {
+      type: Schema.Types.ObjectId,
+      ref: Account,
+    },
+    createdBy: {
       type: Schema.Types.ObjectId,
       ref: Account,
     },

@@ -36,6 +36,11 @@ const orderSchema = new Schema<IOrder>(
     payment: {
       type: Schema.Types.ObjectId,
       ref: Transaction,
+      required: true,
+    },
+    assignedAgent: {
+      type: Schema.Types.ObjectId,
+      ref: Account,
     },
   },
   { timestamps: true },
