@@ -196,12 +196,18 @@ class OrderService {
       req.query = filterUndefined(req.query);
       ids = filteredOrders.map((order) => String(order._id));
     }
-    const conditions = id ? { createdBy: id } : {};
+    let conditions: Record<string, unknown> = id ? { createdBy: id } : {};
 
-    const orders = await find(Order, req, {
-      _id: ids ? { $in: ids } : undefined,
-      ...conditions,
-    });
+    if (ids.length > 0) {
+      conditions = {
+        ...conditions,
+        _id: {
+          $in: ids,
+        },
+      };
+    }
+
+    const orders = await find(Order, req, conditions);
 
     return {
       success: true,
