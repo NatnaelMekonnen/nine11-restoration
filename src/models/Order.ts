@@ -7,6 +7,10 @@ import { IOrder } from "./interface";
 
 const orderSchema = new Schema<IOrder>(
   {
+    request: {
+      type: Schema.Types.ObjectId,
+      ref: "Request",
+    },
     acceptedDate: {
       type: String,
       default: moment().toISOString(),

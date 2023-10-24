@@ -54,6 +54,7 @@ export interface IRequest extends ITimeStamps {
   closedBy?: string | Types.ObjectId | IAccount;
 }
 export interface IOrder extends ITimeStamps {
+  request: string | Types.ObjectId | IRequest;
   orderId: string;
   acceptedDate: string;
   cost: number;

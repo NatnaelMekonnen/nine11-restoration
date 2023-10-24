@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import _ from "lodash";
 import { errorLogger } from "../utils/logger";
 import { Request } from "express";

@@ -8,7 +8,7 @@ import {
 } from "../constants/enums";
 import Order from "../models/Order";
 import { AuthenticatedRequest, IServiceReturn } from "../types/type";
-import { IAccount } from "../models/interface";
+import { IAccount, IOrder } from "../models/interface";
 import { find, findOne } from "../helpers/Query";
 import moment from "moment";
 import { CreateOrderDTO, UpdateOrderDTO } from "../dto/order.dto";
@@ -16,6 +16,7 @@ import CodeGenerator from "../helpers/CodeGenerator";
 import { withTransaction } from "../utils/withTransaction";
 import Transaction from "../models/Transaction";
 import Request from "../models/Request";
+import { filterUndefined } from "../utils/sanitize";
 
 class OrderService {
   private codeGenerator: CodeGenerator;
@@ -56,6 +57,7 @@ class OrderService {
       });
 
       order.payment = payment._id;
+      order.request = request._id;
 
       request.requestStatus = RequestStatus.Accepted;
       request.order = order._id;
@@ -163,8 +165,43 @@ class OrderService {
         ? account?._id
         : undefined;
 
+    let ids: string[] = [];
+
+    if (
+      req.query?.filterBy &&
+      req.query.filterBy.toString().match(new RegExp("payment", "i"))
+    ) {
+      const filteredOrders: IOrder[] = await Order.aggregate([
+        {
+          $lookup: {
+            from: "transactions",
+            localField: "payment",
+            foreignField: "_id",
+            as: "payment",
+          },
+        },
+        {
+          $unwind: {
+            path: "$payment",
+          },
+        },
+        {
+          $match: {
+            "payment.paymentStatus": req.query.filterValue,
+          },
+        },
+      ]).exec();
+      req.query.filterBy = undefined;
+      req.query.filterValue = undefined;
+      req.query = filterUndefined(req.query);
+      ids = filteredOrders.map((order) => String(order._id));
+    }
     const conditions = id ? { createdBy: id } : {};
-    const orders = await find(Order, req, conditions);
+
+    const orders = await find(Order, req, {
+      _id: ids ? { $in: ids } : undefined,
+      ...conditions,
+    });
 
     return {
       success: true,
