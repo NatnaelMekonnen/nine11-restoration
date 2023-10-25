@@ -47,8 +47,8 @@ class RequestService {
     if (!request) {
       return {
         success: false,
-        status: 400,
-        message: "Error in request creation",
+        status: 404,
+        message: "Request not found",
         data: request,
       };
     }
@@ -79,7 +79,7 @@ class RequestService {
     return {
       success: true,
       status: 200,
-      message: "Request created",
+      message: "Request updated",
       data: updated,
     };
   }
@@ -93,8 +93,8 @@ class RequestService {
     if (!request) {
       return {
         success: false,
-        status: 400,
-        message: "Error in request creation",
+        status: 404,
+        message: "Request not found",
         data: request,
       };
     }

@@ -32,7 +32,7 @@ class OrderService {
       if (!request) {
         return {
           success: false,
-          status: 400,
+          status: 404,
           message: "Request not found!",
           data: request,
         };
@@ -92,8 +92,8 @@ class OrderService {
     if (!order) {
       return {
         success: false,
-        status: 400,
-        message: "Bad request!",
+        status: 404,
+        message: "Order not found",
         data: order,
       };
     }
@@ -132,8 +132,8 @@ class OrderService {
     if (!order) {
       return {
         success: false,
-        status: 400,
-        message: "Bad request!",
+        status: 404,
+        message: "Order not found!",
         data: order,
       };
     }
