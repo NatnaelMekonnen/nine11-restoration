@@ -166,6 +166,7 @@ class OrderService {
         : undefined;
 
     let ids: string[] = [];
+    let conditions: Record<string, unknown> = id ? { createdBy: id } : {};
 
     if (
       req.query?.filterBy &&
@@ -195,10 +196,6 @@ class OrderService {
       req.query.filterValue = undefined;
       req.query = filterUndefined(req.query);
       ids = filteredOrders.map((order) => String(order._id));
-    }
-    let conditions: Record<string, unknown> = id ? { createdBy: id } : {};
-
-    if (ids.length > 0) {
       conditions = {
         ...conditions,
         _id: {
