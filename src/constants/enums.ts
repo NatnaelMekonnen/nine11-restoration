@@ -4,7 +4,7 @@ export enum AccountType {
   Customer = "Customer",
 }
 export enum StaffRole {
-  Admin = "Admin",
+  Dispatcher = "Dispatcher",
   FieldAgent = "FieldAgent",
 }
 export enum AccountStatus {
