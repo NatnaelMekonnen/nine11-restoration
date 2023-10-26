@@ -38,6 +38,15 @@ class OrderService {
         };
       }
 
+      if (request.requestStatus === RequestStatus.Accepted) {
+        return {
+          success: false,
+          status: 400,
+          message: "Request is already accepted",
+          data: request,
+        };
+      }
+
       const payment = new Transaction({
         amount: params.cost,
         from: {
