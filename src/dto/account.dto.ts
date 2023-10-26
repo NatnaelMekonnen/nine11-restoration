@@ -8,7 +8,7 @@ import {
   MaxLength,
   MinLength,
 } from "class-validator";
-import { AccountType } from "../constants/enums";
+import { AccountType, StaffRole } from "../constants/enums";
 import { IAccount } from "../models/interface";
 
 export class CreateAccountDTO implements Partial<IAccount> {
@@ -46,6 +46,10 @@ export class CreateAccountDTO implements Partial<IAccount> {
 
   @IsEmpty()
   accountStatus?: "Active" | "Inactive" | "Suspended" | "Deleted" | undefined;
+
+  @IsOptional()
+  @IsEnum(StaffRole)
+  role!: keyof typeof StaffRole;
 }
 
 export class UpdateAccountDTO implements Partial<IAccount> {

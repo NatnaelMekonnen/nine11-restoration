@@ -12,11 +12,15 @@ import TokenManager from "../helpers/TokenManager";
 import Account from "../models/Account";
 import Otp from "../models/Otp";
 import { generateOTP } from "../utils/generateOTP";
-import { Types } from "mongoose";
+import { ClientSession, Document, Types } from "mongoose";
 import { Request } from "express";
 import { AccountStatus, AccountType, OtpType } from "../constants/enums";
 import { IAccount } from "../models/interface";
 import { AuthenticatedRequest, IServiceReturn } from "../types/type";
+import { validateRequest } from "../middleware/validate";
+import { CreateStaffDTO } from "../dto/staff.dto";
+import Staff from "../models/Staff";
+import { withTransaction } from "../utils/withTransaction";
 
 class AccountService {
   private codeGenerator: CodeGenerator;
@@ -39,7 +43,7 @@ class AccountService {
       if (account?.accountType === AccountType.Admin && !params.password) {
         params.password = this.codeGenerator.getTemporaryPassword();
       }
-
+      let staff: Document | undefined = undefined;
       const newAccount = new Account({
         firstName: params.firstName,
         lastName: params.lastName,
@@ -49,7 +53,33 @@ class AccountService {
         email: params.email,
       });
 
-      await newAccount.save();
+      if (params.accountType === AccountType.Staff) {
+        const staffCreate = await validateRequest(CreateStaffDTO, {
+          staff: newAccount._id,
+          role: params.role,
+        });
+
+        if (staffCreate.error || !staffCreate.data) {
+          return {
+            success: false,
+            status: 400,
+            message: "Error in staff creation",
+            data: staffCreate.error,
+          };
+        }
+        staff = new Staff({
+          ...params,
+          account: newAccount?._id,
+          staffStatus: AccountStatus.Active,
+        });
+      }
+
+      await withTransaction(async (session: ClientSession) => {
+        await newAccount.save({ session });
+        if (staff) {
+          await staff.save({ session });
+        }
+      });
       if (account?.accountType === AccountType.Admin) {
         this.mailService.sendMail({
           subject: "Account Created",
