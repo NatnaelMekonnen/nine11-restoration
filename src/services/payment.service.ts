@@ -66,17 +66,6 @@ class PaymentService {
       paymentRef: this.codeGenerator.getPaymentRef(),
     };
 
-    const totalFulfilled = payment.fulfilledPayments?.reduce((sum, paid) => {
-      if (!paid.amount) {
-        return 0;
-      }
-      return sum + paid.amount;
-    }, amount);
-
-    if (payment.amount <= totalFulfilled) {
-      payment.paymentStatus = PaymentStatus.Successful;
-    }
-
     payment.fulfilledPayments.push(paymentObject);
 
     await payment.save();
@@ -110,10 +99,23 @@ class PaymentService {
       return paid;
     });
 
+    const totalFulfilled = updatedPayments?.reduce((sum, paid) => {
+      if (!paid.amount) {
+        return sum;
+      }
+      return sum + paid.amount;
+    }, 0);
+
+    let paymentStatus = payment.paymentStatus;
+
+    if (payment.amount <= totalFulfilled) {
+      paymentStatus = PaymentStatus.Successful;
+    }
+
     const update = await Transaction.findByIdAndUpdate(
       params.paymentId,
       {
-        $set: { fulfilledPayments: updatedPayments },
+        $set: { fulfilledPayments: updatedPayments, paymentStatus },
       },
       { new: true },
     );
