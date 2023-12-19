@@ -40,6 +40,15 @@ class AccountService {
     account?: IAccount,
   ): Promise<IServiceReturn> {
     try {
+      const isEmailUsed = await Account.findOne({ email: params.email });
+      if (isEmailUsed) {
+        return {
+          message: "Email has already been used",
+          data: {},
+          status: 400,
+          success: false,
+        };
+      }
       if (account?.accountType === AccountType.Admin && !params.password) {
         params.password = this.codeGenerator.getTemporaryPassword();
       }
