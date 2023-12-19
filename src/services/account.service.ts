@@ -55,7 +55,7 @@ class AccountService {
 
       if (params.accountType === AccountType.Staff) {
         const staffCreate = await validateRequest(CreateStaffDTO, {
-          staff: newAccount._id,
+          staff: String(newAccount._id),
           role: params.role,
         });
 
