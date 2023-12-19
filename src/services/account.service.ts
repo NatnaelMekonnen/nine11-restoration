@@ -77,7 +77,7 @@ class AccountService {
           };
         }
         staff = new Staff({
-          ...params,
+          ...staffCreate.data,
           account: newAccount?._id,
           staffStatus: AccountStatus.Active,
         });
