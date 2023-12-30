@@ -7,8 +7,15 @@ import { IAccount } from "../models/interface";
 import { find, findOne } from "../helpers/Query";
 import Order from "../models/Order";
 import { withTransaction } from "../utils/withTransaction";
+import Account from "../models/Account";
+import MailService from "../helpers/MailService";
 
 class RequestService {
+  private mailService: MailService;
+  constructor() {
+    this.mailService = new MailService();
+  }
+
   public async createRequest(
     params: CreateRequestDTO,
     account?: IAccount,
@@ -29,6 +36,16 @@ class RequestService {
     }
 
     await request.save();
+
+    const admin = await Account.findOne({ accountType: AccountType.Admin });
+
+    if (admin && admin.email) {
+      this.mailService.sendMail({
+        subject: "Request Created",
+        text: `Hello, A Request has been created by ${params.fullName} for a service ${params.service} on date ${params.date}.`,
+        to: admin.email,
+      });
+    }
 
     return {
       success: true,
