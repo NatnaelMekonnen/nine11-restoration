@@ -1,0 +1,17 @@
+Project Title: Node.js Express REST API with Role-Based Authentication
+
+Description:
+A robust REST API powered by Node.js, Express, and TypeScript. This project features a flexible authentication system supporting roles like admin, staff (with specific roles such as field agent, supervisor, finance), and customers. It encompasses user management functionalities like password resets, email verification, and profile updates.
+
+Customers can seamlessly request services, which staff members turn into manageable orders. The system includes a check-based payment process, allowing staff to upload checks for approval. Efficiently track order statuses from pending to completion.
+
+Key Features:
+
+	•	Role-based authentication (admin, staff, customer)
+	•	User management endpoints (reset password, email verification, profile updates)
+	•	Seamless service requests and order management
+	•	Check-based payment processing
+	•	Comprehensive order status tracking
+	•	TypeScript implementation following SOLID principles
+	•	Integration with SendGrid for email functionality
+	•	Utilizes AWS S3 for secure file storage
